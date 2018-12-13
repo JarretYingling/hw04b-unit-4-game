@@ -1,22 +1,18 @@
 // javascript
 
 $(document).ready(function () {
-    let log = function (para) {
-        console.log(para);
-    };
-
-    log("document ready");
 
     let crystalsCollector = {
-        gameState: false,
-        target_min: 0,
-        target_max: 0,
+        target_min: 19,
+        target_max: 120,
         target: 0,
+        crystal_min: 1,
+        crystal_max: 12,
+        crystalColors: ["red", "blue", "yellow", "green"],
+        crystalValues: [],
         score: 0,
-        crystal_min: 0,
-        crystal_max: 0,
-        crystals: ["red", "blue", "yellow", "green"],
-        crystalValues: [0, 0, 0, 0],
+        wins: 0,
+        losses: 0,
         getRandomInt: function (min, max) {
             min = Math.ceil(min);
             max = Math.floor(max);
@@ -24,29 +20,55 @@ $(document).ready(function () {
             return randomInt;
         },
         resetGame: function () {
-            this.target_min = 19;
-            this.target_max = 120;
             this.target = this.getRandomInt(this.target_min, this.target_max);
-            this.crystal_min = 1;
-            this.crystal_max = 12;
-            for (let i = 0; i < this.crystals.length; i++) {
+            for (let i = 0; i < this.crystalColors.length; i++) {
                 this.crystalValues[i] = this.getRandomInt(this.crystal_min, this.crystal_max);
+                // force unique crystalValues
+                for (j = 0; j < i; j++) {
+                    if (this.crystalValues[i] == this.crystalValues[j]) {
+                        i--;
+                        break;
+                    }
+                }
             };
-            log(crystalsCollector);
+            $("#target").html("<h1>" + this.target + "</h1>");
+            this.score = 0;
+            $("#score").html("<h1></h1>");
+            console.log(crystalsCollector);
+            console.log(this.crystalValues);
         },
         updateGame: function (crystalID) {
-            let crystalIndex = this.crystals.indexOf(crystalID);
+            let crystalIndex = this.crystalColors.indexOf(crystalID);
             this.score = this.score + this.crystalValues[crystalIndex];
-            log(crystalsCollector);
+            $("#score").html("<h1>" + this.score + "</h1>");
+            console.log(crystalsCollector);
+            if (this.score < this.target) {
+                return;
+            }
+            if (this.score === this.target) {
+                this.wins++;
+                $("#result").text("You WON!");
+                $("#wins").text(this.wins);
+                alert("You WON!");
+                this.resetGame();
+                return;
+            }
+            if (this.score > this.target) {
+                this.losses++;
+                $("#result").text("You LOST!");
+                $("#losses").text(this.losses);
+                alert("You LOST!");
+                this.resetGame();
+                return;
+            }
         }
     };
 
+    // initialize the game
     crystalsCollector.resetGame();
 
+    // on crystal click
     $(".crystal").on("click", function () {
-        if (crystalsCollector.gameState == false) {
-            crystalsCollector.gameState = true
-        }
         crystalsCollector.updateGame($(this).attr("id"));
     });
 
