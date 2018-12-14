@@ -17,8 +17,8 @@ h4,
 h5,
 h6,
 p {
-    padding: 1px;
-    border-width: 1px;
+    padding: 0px;
+    border-width: 0px;
     border-style: solid;
     border-color: #FFFFFF;
 }
@@ -37,7 +37,7 @@ body {
 }
 
 
-#yoda {
+#l1 {
     width: 120%;
     margin-top: 10px;
 }
